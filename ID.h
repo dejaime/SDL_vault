@@ -1,10 +1,10 @@
-#ifndef SDL_VAULT_H_INCLUDED
-#define SDL_VAULT_H_INCLUDED
+#ifndef ID_H_INCLUDED
+#define ID_H_INCLUDED
 
 /////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) Dejaime Antônio de Oliveira Neto
-//     Created on 20140317 ymd
+//     Created on 20140322 ymd
 //
 // X11 Licensed Code
 //
@@ -28,9 +28,10 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#include <Texture.h>
-#include <Audio.h>
-#include <ID.h>
+#define INVALID_VAULT_ID GET_INVALID_VAULT_ID()
 
+static inline unsigned int GET_INVALID_VAULT_ID () {
+    return (unsigned int)-1;
+}
 
-#endif // SDL_VAULT_H_INCLUDED
+#endif // ID_H_INCLUDED

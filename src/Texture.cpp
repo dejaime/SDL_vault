@@ -84,6 +84,20 @@ bool VaultTextures::FreeUnused() {
     return t_bFreedSomething;
 }
 
+void VaultTextures::Purge() {
+    while (!m_vTextures.empty()) {
+        SDL_DestroyTexture( *(m_vTextures.back().m_pTexture) );
+        m_vTextures.pop_back();
+    }
+}
+
 void VaultTextures::SetExpireTime(unsigned long p_ulExpireTime) {
     m_ulExpireTime = p_ulExpireTime;
+}
+
+unsigned int VaultTextures::GetID (std::string p_sPath) {
+    for (auto t_Entry : m_vTextures )
+        if (t_Entry.m_sPath == p_sPath)
+            return t_Entry.m_uID;
+    return INVALID_VAULT_ID;
 }

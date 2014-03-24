@@ -1,10 +1,7 @@
-#ifndef SDL_VAULT_H_INCLUDED
-#define SDL_VAULT_H_INCLUDED
-
 /////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) Dejaime Antônio de Oliveira Neto
-//     Created on 20140317 ymd
+//     Created on 20140318 ymd
 //
 // X11 Licensed Code
 //
@@ -28,9 +25,20 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#include <Texture.h>
-#include <Audio.h>
+#ifndef AUDIO_H
+#define AUDIO_H
+
+#include <SDL2/SDL.h>
+#include <SDL_mixer.h>
+
 #include <ID.h>
 
+class VaultAudios {
+public:
+    VaultAudios();
+    virtual ~VaultAudios();
+protected:
+private:
+};
 
-#endif // SDL_VAULT_H_INCLUDED
+#endif // AUDIO_H
