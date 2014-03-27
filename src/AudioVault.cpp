@@ -12,12 +12,14 @@ AudioVault::~AudioVault() {
 
 std::shared_ptr<Mix_Music*> AudioVault::GetMusic(std::string p_sPath) {
     for (auto t_Entry : m_vMusics)
-        if (t_Entry.m_sPath == p_sPath)
-            return std::make_shared<Mix_Music*>(*t_Entry.m_pData);
+        if (t_Entry.m_sPath == p_sPath) {
+            t_Entry.m_ulExpiring = 0;
+            return std::shared_ptr<Mix_Music*>(t_Entry.m_pData);
+        }
 
     Mix_Music* t_pMusic = Mix_LoadMUS(p_sPath.c_str());
 
-    if (t_pMusic == NULL) return std::make_shared<Mix_Music*>();
+    if (t_pMusic == NULL) return std::shared_ptr<Mix_Music*>();
 
 
     MusicEntry t_MusicEntry(p_sPath);
@@ -28,21 +30,23 @@ std::shared_ptr<Mix_Music*> AudioVault::GetMusic(std::string p_sPath) {
     m_vMusics.push_back(t_MusicEntry);
 
     //Returns the entry, with the strong reference.
-    return t_MusicEntry.m_pData;
+    return std::shared_ptr<Mix_Music*>(t_MusicEntry.m_pData);
 
 }
 
 std::shared_ptr<Mix_Chunk*> AudioVault::GetChunk(std::string p_sPath) {
     for (auto t_Entry : m_vChunks)
-        if (t_Entry.m_sPath == p_sPath)
-            return std::make_shared<Mix_Chunk*>(*t_Entry.m_pData);
+        if (t_Entry.m_sPath == p_sPath) {
+            t_Entry.m_ulExpiring = 0;
+            return std::shared_ptr<Mix_Chunk*>(t_Entry.m_pData);
+        }
 
     //Note:
     //  The following LoadWAV function also supports other formats such
     //      as OGG, MIDI or MP3.
     Mix_Chunk* t_pChunk = Mix_LoadWAV(p_sPath.c_str());
 
-    if (t_pChunk == NULL) return std::make_shared<Mix_Chunk*>();
+    if (t_pChunk == NULL) return std::shared_ptr<Mix_Chunk*>();
 
     ChunkEntry t_ChunkEntry(p_sPath);
 
@@ -53,7 +57,7 @@ std::shared_ptr<Mix_Chunk*> AudioVault::GetChunk(std::string p_sPath) {
     m_vChunks.push_back(t_ChunkEntry);
 
     //Returns the entry, with the strong reference.
-    return std::make_shared<Mix_Chunk*>(t_pChunk);
+    return std::shared_ptr<Mix_Chunk*>(t_ChunkEntry.m_pData);
 }
 
 Mix_Music* AudioVault::CheckMusic(std::string p_sPath) {
