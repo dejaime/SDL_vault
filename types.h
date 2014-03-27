@@ -32,12 +32,8 @@
 #define TYPES_H_INCLUDED
 
 #include <memory>
-
 #include <vector>
-#include <inttypes.h>
 #include <string>
-
-#include <v2.h>
 
 #define INVALID_UNIQUE_ID GET_INVALID_VAULT_ID()
 static inline unsigned int GET_INVALID_VAULT_ID () {
