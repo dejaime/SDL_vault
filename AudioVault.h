@@ -1,10 +1,7 @@
-#ifndef ID_H_INCLUDED
-#define ID_H_INCLUDED
-
 /////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) Dejaime Antônio de Oliveira Neto
-//     Created on 20140322 ymd
+//     Created on 20140325 ymd
 //
 // X11 Licensed Code
 //
@@ -28,10 +25,57 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#define INVALID_VAULT_ID GET_INVALID_VAULT_ID()
+#ifndef AUDIOVAULT_H
+#define AUDIOVAULT_H
 
-static inline unsigned int GET_INVALID_VAULT_ID () {
-    return (unsigned int)-1;
-}
+#define DEF_FREQUENCY 22050
+#define DEF_SAMPLE_SIZE 4096
 
-#endif // ID_H_INCLUDED
+#include "SDL_mixer.h"
+#include <SDL.h>
+
+#include <types.h>
+
+#include <VaultEntry.h>
+
+typedef vault_entry<Mix_Music> MusicEntry;
+typedef vault_entry<Mix_Chunk> ChunkEntry;
+
+class AudioVault {
+protected:
+    std::vector<MusicEntry> m_vMusics;
+    std::vector<ChunkEntry> m_vChunks;
+    unsigned long m_ulExpirationTime;
+
+public:
+
+    std::shared_ptr<Mix_Music*> GetMusic (std::string p_sPath);
+
+    std::shared_ptr<Mix_Chunk*> GetChunk (std::string p_sPath);
+
+    Mix_Music* CheckMusic (std::string p_sPath);
+
+    Mix_Chunk* CheckChunk (std::string p_sPath);
+
+    bool FreeUnused ();
+
+    void Purge ();
+
+    void SetExpirationTime (unsigned long p_ulExpirationTime);
+
+    AudioVault();
+    virtual ~AudioVault();
+protected:
+    void FreeMusic(MusicEntry p_Entry){
+        Mix_FreeMusic( *(p_Entry.m_pData) );
+        p_Entry.m_pData.reset();
+    }
+    void FreeChunk(ChunkEntry p_Entry){
+        Mix_FreeChunk( *(p_Entry.m_pData) );
+        p_Entry.m_pData.reset();
+    }
+private:
+
+};
+
+#endif // AUDIOVAULT_H

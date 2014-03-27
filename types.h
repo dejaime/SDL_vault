@@ -1,7 +1,10 @@
 /////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) Dejaime Antônio de Oliveira Neto
-//     Created on 20140318 ymd
+//     Created on 20140309 ymd
+//
+// For more:
+//      http://www.buildandgun.com
 //
 // X11 Licensed Code
 //
@@ -25,19 +28,20 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#ifndef AUDIO_H
-#define AUDIO_H
+#ifndef TYPES_H_INCLUDED
+#define TYPES_H_INCLUDED
 
-#include "SDL_mixer.h"
+#include <memory>
 
-#include <ID.h>
+#include <vector>
+#include <inttypes.h>
+#include <string>
 
-class VaultAudios {
-public:
-    VaultAudios();
-    virtual ~VaultAudios();
-protected:
-private:
-};
+#include <v2.h>
 
-#endif // AUDIO_H
+#define INVALID_UNIQUE_ID GET_INVALID_VAULT_ID()
+static inline unsigned int GET_INVALID_VAULT_ID () {
+    return (unsigned int)-1;
+}
+
+#endif // TYPES_H_INCLUDED

@@ -1,10 +1,10 @@
-#ifndef SDL_VAULT_H_INCLUDED
-#define SDL_VAULT_H_INCLUDED
+#ifndef VAULTENTRY_H_INCLUDED
+#define VAULTENTRY_H_INCLUDED
 
 /////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) Dejaime Antônio de Oliveira Neto
-//     Created on 20140317 ymd
+//     Created on 20140325 ymd
 //
 // X11 Licensed Code
 //
@@ -28,9 +28,17 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#include <Texture.h>
-#include <Audio.h>
-#include <ID.h>
+template <typename Type> struct vault_entry{
+    unsigned long m_ulExpiring;
+    std::shared_ptr<Type*> m_pData;
+    std::string m_sPath;
 
+    vault_entry (const int p_id):
+        m_ulExpiring(0), m_pData(NULL), m_sPath(NULL) {}
+    vault_entry (const std::string p_sPath):
+        m_ulExpiring(0), m_pData(NULL), m_sPath(p_sPath) {}
+    vault_entry (const vault_entry& p_Copy):
+        m_ulExpiring(0), m_pData(p_Copy.m_pData), m_sPath(p_Copy.m_sPath) {}
+};
 
-#endif // SDL_VAULT_H_INCLUDED
+#endif // VAULTENTRY_H_INCLUDED

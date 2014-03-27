@@ -25,87 +25,50 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef TEXTUREVAULT_H
+#define TEXTUREVAULT_H
 
-#include <vector>
-#include <memory>
-#include <string>
+#include "SDL_image.h"
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include <types.h>
 
-#include <ID.h>
+#include <VaultEntry.h>
 
-typedef struct VAULT_TEXTURE_ENTRY {
-    unsigned int m_uID;
-    unsigned long m_ulExpiring;
-    std::string m_sPath;
-    std::shared_ptr<SDL_Texture*> m_pTexture;
+typedef vault_entry<SDL_Texture> TEntry;
 
-    static unsigned int s_uNextID;
-
-    VAULT_TEXTURE_ENTRY (const int p_id):
-        m_uID(p_id), m_pTexture(NULL) {}
-    VAULT_TEXTURE_ENTRY (const std::string p_sPath):
-        m_uID(s_uNextID), m_sPath(p_sPath), m_pTexture(NULL){++s_uNextID;}
-} TEntry;
-
-
-class VaultTextures {
-protected:
-
-public:
-    std::shared_ptr<SDL_Texture*> GetTexture (unsigned int p_uID);
-    std::shared_ptr<SDL_Texture*> GetTexture (std::string p_sPath);
-
-    unsigned int GetID (std::string p_sPath);
-
-    SDL_Texture* CheckTexture (unsigned int p_uID);
-    SDL_Texture* CheckTexture (std::string p_sPath);
-
-    SDL_Renderer* GetRenderer () const { return m_pRenderer; }
-
-    //bool Register (unsigned int p_uID, std::string p_sPath, SDL_Texture* p_Texture);
-
-    bool FreeUnused ();
-    void Purge ();
-
-    void SetExpireTime (unsigned long p_ulExpireTime);
-
-    VaultTextures(SDL_Renderer *p_Renderer = NULL, unsigned long p_ulExpireTime = 0);
-    virtual ~VaultTextures();
-
-
+class TextureVault {
 protected:
     std::vector<TEntry> m_vTextures;
     SDL_Renderer *m_pRenderer;
     unsigned long m_ulExpireTime;
-
-    void FreeTexture (TEntry *t_Entry) {
-        SDL_DestroyTexture( *(t_Entry->m_pTexture) );
-        t_Entry->m_pTexture.reset();
-        t_Entry->m_uID = INVALID_VAULT_ID;
-    }
-
 public:
+    std::shared_ptr<SDL_Texture*> GetTexture (std::string p_sPath);
+
+    SDL_Texture* CheckTexture (std::string p_sPath);
+
+    SDL_Renderer* GetRenderer () const { return m_pRenderer; }
+
+    bool FreeUnused ();
+    void Purge ();
+
+    void SetExpirationTime (unsigned long p_ulExpireTime);
+
+    TextureVault(SDL_Renderer *p_Renderer = NULL, unsigned long p_ulExpireTime = 0);
+    virtual ~TextureVault();
+
+protected:
+    void FreeTexture (TEntry *p_Entry) {
+        SDL_DestroyTexture( *(p_Entry->m_pData) );
+        p_Entry->m_pData.reset();
+    }
 
     //Function to abstract the SDL_image surface to texture procedure.
     //Used internally, but public in case needed outside.
     //Useful If the texture will be rendered to and you don't want
     //  to use a shared texture for that (what wouldn't be wise).
-    SDL_Texture* LoadTexture (const char* p_pcPath) {
-        //Load the texture
-        SDL_Surface* t_pSurface = IMG_Load(p_pcPath);
-        if (t_pSurface == NULL) return NULL;
+    SDL_Texture* LoadTexture (const char* p_pcPath);
 
-        SDL_Texture* t_pRetTexture = SDL_CreateTextureFromSurface(m_pRenderer, t_pSurface);
-
-        SDL_FreeSurface(t_pSurface);
-
-        return t_pRetTexture;
-    }
-
+public:
     static inline SDL_Texture* LoadTexture (SDL_Renderer *p_pRenderer, const char* p_pcPath) {
         //Load the texture
         SDL_Surface* t_pSurface = IMG_Load(p_pcPath);
@@ -118,6 +81,12 @@ public:
         return t_pRetTexture;
     }
 
+private:
+    //protecting copy ctor and assign
+    TextureVault(const TextureVault&):
+        m_vTextures(), m_pRenderer(NULL), m_ulExpireTime(0){}
+    TextureVault& operator= (const TextureVault&) {return *this;}
+
 };
 
-#endif // TEXTURE_H
+#endif // TEXTUREVAULT_H
