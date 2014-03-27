@@ -13,12 +13,12 @@ TextureVault::~TextureVault() {
 }
 
 std::shared_ptr<SDL_Texture*> TextureVault::GetTexture(std::string p_sPath) {
-    if (!m_pRenderer) return std::shared_ptr<SDL_Texture*>(NULL);
+    if (!m_pRenderer) return std::make_shared<SDL_Texture*>();
 
     for (auto t_Entry : m_vTextures)
         if (t_Entry.m_sPath == p_sPath) {
             t_Entry.m_ulExpiring = 0;
-            return t_Entry.m_pData;
+            return std::make_shared<SDL_Texture*>(*t_Entry.m_pData);
         }
 
     //Reaching here means the texture was not previously loaded.
@@ -27,19 +27,19 @@ std::shared_ptr<SDL_Texture*> TextureVault::GetTexture(std::string p_sPath) {
     SDL_Texture* t_pTexture = LoadTexture(p_sPath.c_str());
     //If LoadTexture returns NULL, we couldn't load the Texture.
     //An invalid ID entry is then returned.
-    if (t_pTexture  == NULL) return std::shared_ptr<SDL_Texture*>();
+    if (t_pTexture  == NULL) return std::make_shared<SDL_Texture*>();
     //Otherwise, it was successfully loaded.
 
     //Sets the path into our texture entry.
     TEntry t_TextureEntry(p_sPath);
     //Sets the strong reference (shared_ptr).
-    t_TextureEntry.m_pData.reset(&t_pTexture);
+    t_TextureEntry.m_pData = std::make_shared<SDL_Texture*>(t_pTexture);
 
     //Pushes it into the vector.
     m_vTextures.push_back(t_TextureEntry);
 
     //Returns the entry, with the strong reference.
-    return t_TextureEntry.m_pData;
+    return std::make_shared<SDL_Texture*>(*t_TextureEntry.m_pData);
 }
 
 SDL_Texture* TextureVault::CheckTexture(std::string p_sPath) {
