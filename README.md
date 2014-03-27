@@ -16,3 +16,5 @@ the usage count. It also allows us to get direct pointers to assets, that doesn'
 count, so it won't prevent the asset from being deleted (not recommended, but possible).
 
 WIP, by a newbie, feel free to help me!
+
+  http://www.buildandgun.com
