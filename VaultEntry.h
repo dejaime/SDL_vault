@@ -33,8 +33,6 @@ template <typename Type> struct vault_entry{
     std::shared_ptr<Type*> m_pData;
     std::string m_sPath;
 
-    vault_entry (const int p_id):
-        m_ulExpiring(0), m_pData(NULL), m_sPath(NULL) {}
     vault_entry (const std::string p_sPath):
         m_ulExpiring(0), m_pData(NULL), m_sPath(p_sPath) {}
     vault_entry (const vault_entry& p_Copy):
