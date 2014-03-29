@@ -40,7 +40,7 @@ class TextureVault {
 protected:
     std::vector<TEntry> m_vTextures;
     SDL_Renderer *m_pRenderer;
-    unsigned long m_ulExpireTime;
+    unsigned long m_ulExpirationTime;
 public:
     std::shared_ptr<SDL_Texture*> GetTexture (std::string p_sPath);
 
@@ -51,7 +51,9 @@ public:
     bool FreeUnused ();
     void Purge ();
 
-    void SetExpirationTime (unsigned long p_ulExpireTime);
+    inline void SetExpirationTime (unsigned long p_ulExpirationTime) {
+        m_ulExpirationTime = p_ulExpirationTime;
+    }
 
     TextureVault(SDL_Renderer *p_Renderer = NULL, unsigned long p_ulExpireTime = 0);
     virtual ~TextureVault();
@@ -84,7 +86,7 @@ public:
 private:
     //protecting copy ctor and assign
     TextureVault(const TextureVault&):
-        m_vTextures(), m_pRenderer(NULL), m_ulExpireTime(0){}
+        m_vTextures(), m_pRenderer(NULL), m_ulExpirationTime(0){}
     TextureVault& operator= (const TextureVault&) {return *this;}
 
 };

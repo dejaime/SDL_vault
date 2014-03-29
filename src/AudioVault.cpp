@@ -112,7 +112,3 @@ void AudioVault::Purge() {
     m_vMusics.clear();
     m_vChunks.clear();
 }
-
-void AudioVault::SetExpirationTime(unsigned long p_ulExpirationTime) {
-    m_ulExpirationTime = p_ulExpirationTime;
-}

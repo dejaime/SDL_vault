@@ -3,7 +3,7 @@
 //unsigned int TEntry::s_uNextID = 0;
 
 TextureVault::TextureVault(SDL_Renderer *p_Renderer, unsigned long p_ulExpireTime)
-    :m_vTextures(), m_pRenderer(p_Renderer), m_ulExpireTime(p_ulExpireTime){
+    :m_vTextures(), m_pRenderer(p_Renderer), m_ulExpirationTime(p_ulExpireTime){
     //ctor
 }
 
@@ -57,7 +57,7 @@ bool TextureVault::FreeUnused() {
         if ( t_Entry->m_pData.unique() ) {
             if (t_Entry->m_ulExpiring == 0)
                 t_Entry->m_ulExpiring = SDL_GetTicks();
-            if (SDL_GetTicks()-t_Entry->m_ulExpiring >= m_ulExpireTime) {
+            if (SDL_GetTicks()-t_Entry->m_ulExpiring >= m_ulExpirationTime) {
                 FreeTexture( &*t_Entry );
                 m_vTextures.erase(t_Entry);
                 t_bFreedSomething = true;
@@ -72,10 +72,6 @@ void TextureVault::Purge() {
     for (auto t_Entry : m_vTextures)
         SDL_DestroyTexture( *(t_Entry.m_pData) );
     m_vTextures.clear();
-}
-
-void TextureVault::SetExpirationTime(unsigned long p_ulExpirationTime) {
-    m_ulExpireTime = p_ulExpirationTime;
 }
 
 SDL_Texture* TextureVault::LoadTexture (const char* p_pcPath) {

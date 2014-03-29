@@ -61,7 +61,9 @@ public:
 
     void Purge ();
 
-    void SetExpirationTime (unsigned long p_ulExpirationTime);
+    inline void SetExpirationTime(unsigned long p_ulExpirationTime) {
+        m_ulExpirationTime = p_ulExpirationTime;
+    }
 
     AudioVault();
     virtual ~AudioVault();
