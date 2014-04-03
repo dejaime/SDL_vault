@@ -95,7 +95,7 @@ unsigned int TextureVault::TimedFreeUnused(unsigned int, void* p_TexVault) {
 
 void TextureVault::SetAutoFree(unsigned long p_ulTimeMS) {
     if(m_TimerID != 0) StopAutoFree();
-    if (p_ulTimeMS <= 0) return;
+    if (p_ulTimeMS == 0) return;
     m_TimerID = SDL_AddTimer(p_ulTimeMS, TextureVault::TimedFreeUnused, this);
 }
 

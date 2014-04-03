@@ -120,7 +120,7 @@ unsigned int AudioVault::TimedFreeUnused(unsigned int, void* p_AudioVault) {
 
 void AudioVault::SetAutoFree(unsigned long p_ulTimeMS){
     if (m_TimerID != 0) StopAutoFree();
-    if (p_ulTimeMS <= 0) return;
+    if (p_ulTimeMS == 0) return;
     m_TimerID = SDL_AddTimer(p_ulTimeMS, AudioVault::TimedFreeUnused, this);
 }
 
