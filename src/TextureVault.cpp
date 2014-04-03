@@ -2,12 +2,13 @@
 
 //unsigned int TEntry::s_uNextID = 0;
 
-TextureVault::TextureVault(SDL_Renderer *p_Renderer, unsigned long p_ulExpireTime)
-    :m_vTextures(), m_pRenderer(p_Renderer), m_ulExpirationTime(p_ulExpireTime){
-    //ctor
+TextureVault::TextureVault(SDL_Renderer *p_Renderer, unsigned long p_ulExpirationTime, unsigned long p_ulAutoFreeTime)
+    :m_vTextures(), m_pRenderer(p_Renderer), m_ulExpirationTime(p_ulExpirationTime) {
+    if (p_ulAutoFreeTime > 0) SetAutoFree(p_ulAutoFreeTime);
 }
 
 TextureVault::~TextureVault() {
+    StopAutoFree();
     for (auto t_Entry : m_vTextures)
         SDL_DestroyTexture( *(t_Entry.m_pData) );
 }
@@ -84,4 +85,19 @@ SDL_Texture* TextureVault::LoadTexture (const char* p_pcPath) {
     SDL_FreeSurface(t_pSurface);
 
     return t_pRetTexture;
+}
+
+unsigned int TextureVault::TimedFreeUnused(unsigned int, void* p_TexVault) {
+    ((TextureVault*)p_TexVault)->FreeUnused();
+    return 0;
+}
+
+void TextureVault::SetAutoFree(unsigned long p_ulTimeMS){
+    m_TimerID = SDL_AddTimer(p_ulTimeMS, TimedFreeUnused, this);
+}
+
+void TextureVault::StopAutoFree()
+{
+    if (m_TimerID) SDL_RemoveTimer(m_TimerID);
+    m_TimerID = 0;
 }

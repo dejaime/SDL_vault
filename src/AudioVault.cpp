@@ -1,13 +1,13 @@
 #include "AudioVault.h"
 #include <iostream>
 
-AudioVault::AudioVault():
-    m_vMusics(), m_vChunks(), m_ulExpirationTime(0) {
-    //ctor
+AudioVault::AudioVault(unsigned long p_ulExpirationTime, unsigned long p_ulAutoFreeTime):
+    m_vMusics(), m_vChunks(), m_ulExpirationTime(p_ulExpirationTime) {
+    if (p_ulAutoFreeTime > 0) SetAutoFree(p_ulAutoFreeTime);
 }
 
 AudioVault::~AudioVault() {
-    //dtor
+    StopAutoFree();
 }
 
 std::shared_ptr<Mix_Music*> AudioVault::GetMusic(std::string p_sPath) {
@@ -111,4 +111,19 @@ void AudioVault::Purge() {
         Mix_FreeChunk(*t_Entry.m_pData);
     m_vMusics.clear();
     m_vChunks.clear();
+}
+
+unsigned int AudioVault::TimedFreeUnused(unsigned int, void* p_AudioVault) {
+    ((AudioVault*)p_AudioVault)->FreeUnused();
+    return 0;
+}
+
+void AudioVault::SetAutoFree(unsigned long p_ulTimeMS){
+    m_TimerID = SDL_AddTimer(p_ulTimeMS, TimedFreeUnused, this);
+}
+
+void AudioVault::StopAutoFree()
+{
+    if (m_TimerID) SDL_RemoveTimer(m_TimerID);
+    m_TimerID = 0;
 }

@@ -39,14 +39,18 @@ typedef vault_entry<SDL_Texture> TEntry;
 class TextureVault {
 protected:
     std::vector<TEntry> m_vTextures;
-    SDL_Renderer *m_pRenderer;
-    unsigned long m_ulExpirationTime;
+    SDL_Renderer *m_pRenderer = NULL;
+    unsigned long m_ulExpirationTime = 0;
+    SDL_TimerID m_TimerID = 0;
 public:
     std::shared_ptr<SDL_Texture*> GetTexture (std::string p_sPath);
 
     SDL_Texture* CheckTexture (std::string p_sPath);
 
     SDL_Renderer* GetRenderer () const { return m_pRenderer; }
+
+    void SetAutoFree (unsigned long p_ulTimeMS);
+    void StopAutoFree ();
 
     bool FreeUnused ();
     void Purge ();
@@ -55,10 +59,13 @@ public:
         m_ulExpirationTime = p_ulExpirationTime;
     }
 
-    TextureVault(SDL_Renderer *p_Renderer = NULL, unsigned long p_ulExpireTime = 0);
+    TextureVault(SDL_Renderer *p_Renderer = NULL, unsigned long p_ulExpirationTime = 0, unsigned long p_ulAutoFreeTime = 0);
     virtual ~TextureVault();
 
 protected:
+    //static void TimedFreeUnused (TextureVault* p_TexVault);
+    static unsigned int TimedFreeUnused(unsigned int, void* p_TexVault);
+
     void FreeTexture (TEntry *p_Entry) {
         SDL_DestroyTexture( *(p_Entry->m_pData) );
         p_Entry->m_pData.reset();

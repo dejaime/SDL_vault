@@ -28,8 +28,10 @@
 #ifndef AUDIOVAULT_H
 #define AUDIOVAULT_H
 
-#define DEF_FREQUENCY 22050
-#define DEF_SAMPLE_SIZE 4096
+#define DEFAULT_FREQUENCY 22050
+#define DEFAULT_SAMPLE_SIZE 4096
+#define VOLUME_MAX 2
+#define VOLUME_MIN 0
 
 #include "SDL_mixer.h"
 #include <SDL.h>
@@ -45,7 +47,8 @@ class AudioVault {
 protected:
     std::vector<MusicEntry> m_vMusics;
     std::vector<ChunkEntry> m_vChunks;
-    unsigned long m_ulExpirationTime;
+    unsigned long m_ulExpirationTime = 0;
+    SDL_TimerID m_TimerID = 0;
 
 public:
 
@@ -57,17 +60,21 @@ public:
 
     Mix_Chunk* CheckChunk (std::string p_sPath);
 
-    bool FreeUnused ();
+    void SetAutoFree (unsigned long p_ulTimeMS);
+    void StopAutoFree ();
 
+    bool FreeUnused ();
     void Purge ();
 
     inline void SetExpirationTime(unsigned long p_ulExpirationTime) {
         m_ulExpirationTime = p_ulExpirationTime;
     }
 
-    AudioVault();
+    AudioVault(unsigned long p_ulExpirationTime = 0, unsigned long p_ulAutoFreeTime = 0);
     virtual ~AudioVault();
 protected:
+    static unsigned int TimedFreeUnused(unsigned int, void* p_AudioVault);
+
     void FreeMusic(MusicEntry p_Entry){
         Mix_FreeMusic( *(p_Entry.m_pData) );
         p_Entry.m_pData.reset();

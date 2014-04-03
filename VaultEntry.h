@@ -29,14 +29,16 @@
 /////////////////////////////////////////////////////////////////////////
 
 template <typename Type> struct vault_entry{
-    unsigned long m_ulExpiring;
-    std::shared_ptr<Type*> m_pData;
+    unsigned long m_ulExpiring = 0;
+    std::shared_ptr<Type*> m_pData = NULL;
     std::string m_sPath;
 
     vault_entry (const std::string p_sPath):
-        m_ulExpiring(0), m_pData(NULL), m_sPath(p_sPath) {}
+        m_sPath(p_sPath) {}
     vault_entry (const vault_entry& p_Copy):
-        m_ulExpiring(0), m_pData(p_Copy.m_pData), m_sPath(p_Copy.m_sPath) {}
+        m_pData(p_Copy.m_pData), m_sPath(p_Copy.m_sPath) {}
+
+    virtual ~vault_entry(){}
 };
 
 #endif // VAULTENTRY_H_INCLUDED
