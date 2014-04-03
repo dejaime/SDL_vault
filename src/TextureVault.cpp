@@ -4,6 +4,7 @@
 
 TextureVault::TextureVault(SDL_Renderer *p_Renderer, unsigned long p_ulExpirationTime, unsigned long p_ulAutoFreeTime)
     :m_vTextures(), m_pRenderer(p_Renderer), m_ulExpirationTime(p_ulExpirationTime) {
+
     if (p_ulAutoFreeTime > 0) SetAutoFree(p_ulAutoFreeTime);
 }
 
@@ -92,12 +93,14 @@ unsigned int TextureVault::TimedFreeUnused(unsigned int, void* p_TexVault) {
     return 0;
 }
 
-void TextureVault::SetAutoFree(unsigned long p_ulTimeMS){
+void TextureVault::SetAutoFree(unsigned long p_ulTimeMS) {
+    if(m_TimerID != 0) StopAutoFree();
     m_TimerID = SDL_AddTimer(p_ulTimeMS, TimedFreeUnused, this);
 }
 
-void TextureVault::StopAutoFree()
-{
-    if (m_TimerID) SDL_RemoveTimer(m_TimerID);
-    m_TimerID = 0;
+void TextureVault::StopAutoFree() {
+    if (m_TimerID != 0){
+        SDL_RemoveTimer(m_TimerID);
+        m_TimerID = 0;
+    }
 }
