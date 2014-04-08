@@ -51,28 +51,98 @@ protected:
     SDL_TimerID m_TimerID = 0;
 
 public:
-
+    ////////////////////////////////////////////////
+    /// Checks if a music exists in the vault and returns a strong reference to it. Loads from disk otherwise.
+    /// @param p_sPath The path to the sound file.
+    /// @return Shared Pointer to the music. Returns a NULL pointer if it can't find and fails loading the file.
+    ////////////////////////////////////////////////
     std::shared_ptr<Mix_Music*> GetMusic (std::string p_sPath);
+
+    ////////////////////////////////////////////////
+    /// Pushes a music into the vault.
+    /// @param p_sPath The path to the sound file.
+    /// @param p_pMusic A pointer to a music. Must be valid.
+    /// @return Shared Pointer to the passed music.
+    /// @warning This doesn't check if p_sPath is unique. Using a p_sPath that already exists is an error.
+    ////////////////////////////////////////////////
     std::shared_ptr<Mix_Music*> PushNewMusic (Mix_Music* p_pMusic, std::string p_sPath);
 
+    ////////////////////////////////////////////////
+    /// Checks if a chunk exists in the vault and returns a strong reference to it. Loads from disk otherwise.
+    /// @param p_sPath The path to the sound file.
+    /// @return Shared Pointer to the chunk. Returns a NULL pointer if it can't find and fails loading the file.
+    ////////////////////////////////////////////////
     std::shared_ptr<Mix_Chunk*> GetChunk (std::string p_sPath);
+
+    ////////////////////////////////////////////////
+    /// Pushes a chunk into the vault.
+    /// @param p_pChunk A pointer to a chunk. Must be valid.
+    /// @param p_sPath The path to the sound file.
+    /// @return Shared Pointer to the passed chunk.
+    /// @warning This doesn't check if p_sPath is unique. Using a p_sPath that already exists is an error.
+    ////////////////////////////////////////////////
     std::shared_ptr<Mix_Chunk*> PushNewChunk (Mix_Chunk* p_pChunk, std::string p_sPath);
 
+    ////////////////////////////////////////////////
+    /// Checks if a music exists in the vault and returns a direct pointer to it.
+    /// @param p_sPath The path to the sound file.
+    /// @return A valid pointer if the music is found, NULL otherwise.
+    ////////////////////////////////////////////////
     Mix_Music* CheckMusic (std::string p_sPath);
 
+    ////////////////////////////////////////////////
+    /// Checks if a chunk exists in the vault and returns a direct pointer to it.
+    /// @param p_sPath The path to the sound file.
+    /// @return A valid pointer if the chunk is found, NULL otherwise.
+    ////////////////////////////////////////////////
     Mix_Chunk* CheckChunk (std::string p_sPath);
 
+    ////////////////////////////////////////////////
+    /// Checks if a chunk exists in the vault and returns a strong reference to it. Loads from disk otherwise.
+    /// @param p_ulTimeMS Expiration time in milliseconds. If it is <= 0 it will disable the automatic free.
+    /// @see StopAutoFree()
+    /// @see FreeUnused()
+    ////////////////////////////////////////////////
     void SetAutoFree (unsigned long p_ulTimeMS);
+
+    ////////////////////////////////////////////////
+    /// Turns automatic freeing off.
+    /// @see SetAutoFree()
+    /// @see FreeUnused()
+    ////////////////////////////////////////////////
     void StopAutoFree ();
 
+    ////////////////////////////////////////////////
+    /// Manual call to free all unused (and expired) assets.
+    /// @see SetAutoFree()
+    /// @see StopAutoFree()
+    ////////////////////////////////////////////////
     bool FreeUnused ();
+
+    ////////////////////////////////////////////////
+    /// Destroys all assets contained in the vault. Unused or not.
+    /// @warning May leave orphan pointers! Remember, the shared_ptr are pointers to pointers.
+    ////////////////////////////////////////////////
     void Purge ();
 
+    ////////////////////////////////////////////////
+    /// Sets an expiration time that an asset needs to be unused before being freed.
+    /// @see FreeUnused();
+    /// @see SetAutoFree();
+    ////////////////////////////////////////////////
     inline void SetExpirationTime(unsigned long p_ulExpirationTime) {
         m_ulExpirationTime = p_ulExpirationTime;
     }
 
+    ////////////////////////////////////////////////
+    /// Constructor for the AudioVault.
+    /// @param p_ulExpirationTime The time an asset needs to stay unused before being freed.
+    /// @param p_ulAutoFreeTime Automatic FreeUnused() call period. 0 will disable it.
+    /// @see StopAutoFree()
+    /// @see FreeUnused()
+    ////////////////////////////////////////////////
     AudioVault(unsigned long p_ulExpirationTime = 0, unsigned long p_ulAutoFreeTime = 0);
+
     virtual ~AudioVault();
 protected:
     static unsigned int TimedFreeUnused(unsigned int, void* p_AudioVault);
