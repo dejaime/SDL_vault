@@ -3,7 +3,7 @@ SDL_vault
 An asset loading helper library for SDL
 =======================================
 
-X11 (MIT) Licensed code.
+X11 Licensed code.
 
 SDL_vault is a library that helps loading/freeing Texture and Audio assets from SDL.
 
