@@ -19,3 +19,12 @@ count, so it won't prevent the asset from being deleted (not recommended, but po
 
 Download the PDF documentation here:
 	https://www.dropbox.com/s/h1g2rbi2eaeb9tg/SDL_vault.pdf
+
+
+
+To compile, include the files with your compiler (or in your IDE).
+
+Dependencies:
+	SDL2
+	SDL2_image
+	SDL2_mixer
