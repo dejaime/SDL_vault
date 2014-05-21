@@ -18,7 +18,7 @@ count, so it won't prevent the asset from being deleted (not recommended, but po
   http://www.buildandgun.com
 
 Download the PDF documentation here:
-	https://www.dropbox.com/s/h1g2rbi2eaeb9tg/SDL_vault.pdf
+	https://drive.google.com/file/d/0BwuwF8TLK3q8bGc1ODFOM0phczg
 
 
 
